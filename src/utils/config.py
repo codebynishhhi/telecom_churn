@@ -19,7 +19,7 @@ DATA_DIR = os.path.join(BASE_DIR, "data")
 
 ARTIFACTS_DIR = os.path.join(BASE_DIR, "artifacts")
 
-RAW_DATA_PATH = os.path.join(DATA_DIR, "raw", "Telco-Customer-Churn.csv")
+RAW_DATA_PATH = os.path.join(DATA_DIR, "raw", "churn_data.csv")
 
 MODEL_SAVE_PATH = os.path.join(ARTIFACTS_DIR, "model", "enhanced_logistic_regression_model.pkl")
 
