@@ -5,11 +5,12 @@
 # 4. Applying threshold from config
 # 5. Returning structured output
 
+import os
 import joblib
 import pandas as pd
 from typing import Union
 from sklearn.metrics import recall_score, precision_score, roc_auc_score
-from src.utils.config import MODEL_SAVE_PATH, CHURN_THRESHOLD
+from src.utils.config import MODEL_SAVE_PATH, ARTIFACTS_DIR
 
 class PredictionPipeline:
     
@@ -23,31 +24,27 @@ class PredictionPipeline:
         except Exception as e:
             raise Exception(f"Error loading model: {e}")
 
-    def predict(self, input_data : Union[pd.DataFrame,dict], y_test) -> pd.DataFrame:
+    def predict(self, input_data: Union[pd.DataFrame, dict]) -> pd.DataFrame:
         try:
-            # convert dict input to dataframe if needed
             if isinstance(input_data, dict):
                 input_df = pd.DataFrame([input_data])
             else:
                 input_df = input_data.copy()
 
-            # get probabilites of churn
-            churn_probabilites = self.model.predict_proba(input_df)[:, 1]
+            churn_probabilities = self.model.predict_proba(input_df)[:, 1]
 
-            # apply threshold to get churn flag
-            predictions = (churn_probabilites >= CHURN_THRESHOLD).astype(int)
-            print(f"Churn probabilities: {churn_probabilites}")
-            print(f"Predictions: {predictions}")
-            print("=="*50)
-            print(f"Recall at 0.35 threshold\n:", recall_score(y_test, predictions))
-            print(f"Precision at 0.35 threshold\n:", precision_score(y_test, predictions))
-            print(f"AUC-ROC at 0.35 threshold\n:", roc_auc_score(y_test, churn_probabilites))
-            # Build results dataframe
+            # Load optimized threshold
+            with open(os.path.join(ARTIFACTS_DIR, "threshold.txt"), "r") as f:
+                threshold = float(f.read())
+
+            predictions = (churn_probabilities >= threshold).astype(int)
+
             result_dataframe = pd.DataFrame({
-                "churn_probability": churn_probabilites,
+                "churn_probability": churn_probabilities,
                 "churn_prediction": predictions
-            }) 
-            print(f"Result DataFrame\n: {result_dataframe}")
+            })
+
             return result_dataframe
+
         except Exception as e:
             raise Exception(f"Error during prediction: {e}")

@@ -25,7 +25,7 @@ def main():
     # model prediction and evaluation
     
     prediction_pipeline = PredictionPipeline()
-    predictions = prediction_pipeline.predict(X_test, y_test)
+    predictions = prediction_pipeline.predict(X_test)
 
 if __name__ == "__main__":
     main()
