@@ -2,11 +2,13 @@
 # 1. Build the model based on the configs
 # 2. Build the preprocessing pipeline
 # 3. Creates full sklearn pipeline by combining the preprocessing and model
-# 4. Fit the pipeline on the training data
-# 5. Train the model
-# 6. Evaluate the model 
-# 7. Log to mlflow
-# 8. Save the model to the artifacts folder
+# 4. Run stratified K-Fold cross validation to evaluate the model performance on training data 
+# 5 log the metrics to mlflow
+# 6. Fit the pipeline on the training data
+# 7. Train the model
+# 8. Evaluate the model 
+# 9. Log to mlflow
+# 10. Save the model to the artifacts folder
 
 
 from typing import Tuple
@@ -14,11 +16,12 @@ import os
 import joblib
 import mlflow
 import mlflow.sklearn
-
+import numpy as np
 from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score, recall_score, precision_score
 from src.components.model_preprocessing import ModelPreprocessing
+from sklearn.model_selection import StratifiedKFold, cross_validate, cross_val_score
 from xgboost import XGBClassifier
 from src.utils.config import (
     MODEL_TYPE,
@@ -66,6 +69,36 @@ class ModelTraining:
                     ]
                 )
 
+                # ==============================================
+                # Cross-validation on training data to evaluate the model performance
+                # ==============================================
+                skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
+                cv_results = cross_validate(
+                    self.pipeline, X_train, y_train, cv=skf, scoring={
+                        'roc_auc': 'roc_auc',
+                        'recall': 'recall',
+                    } ,
+                    return_train_score=False
+                )
+
+                cv_roc_auc_mean = np.mean(cv_results['test_roc_auc'])
+                cv_recall_mean = np.mean(cv_results['test_recall'])
+
+                cv_roc_auc_std = np.std(cv_results['test_roc_auc'])
+                cv_recall_std = np.std(cv_results['test_recall'])
+                
+                print("Cross Validation Results")
+                print(f"CV ROC-AUC Mean: {cv_roc_auc_mean}")
+                print(f"CV ROC-AUC Std: {cv_roc_auc_std}")
+                print(f"CV Recall Mean: {cv_recall_mean}")
+                print(f"CV Recall Std: {cv_recall_std}")
+
+                mlflow.log_metric("cv_roc_auc_mean", cv_roc_auc_mean)
+                mlflow.log_metric("cv_roc_auc_std", cv_roc_auc_std)
+                mlflow.log_metric("cv_recall_mean", cv_recall_mean)
+                mlflow.log_metric("cv_recall_std", cv_recall_std)
+                
                 # fit the pipeline on training data
                 self.pipeline.fit(X_train, y_train)
 

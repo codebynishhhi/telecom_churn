@@ -1,0 +1,23 @@
+artifact_path: /Users/nishiigupta/Documents/telcom-churn/mlruns/1/models/m-d0390d5aefc1414f969fe4b41bd3b704/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.14.0
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.8.0
+    skops_trusted_types: null
+mlflow_version: 3.10.0
+model_id: m-d0390d5aefc1414f969fe4b41bd3b704
+model_size_bytes: 590352
+model_uuid: m-d0390d5aefc1414f969fe4b41bd3b704
+prompts: null
+run_id: 5198ac5ab2ec428681125419ad813907
+utc_time_created: '2026-02-22 07:25:14.201223'
