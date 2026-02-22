@@ -20,18 +20,12 @@ def main():
 
     # model training
     model_training = ModelTraining()
-    pipeline, roc_auc_res = model_training.train(X_train, y_train, X_test, y_test)
+    pipeline, roc_auc_res = model_training.train_model(X_train, y_train, X_test, y_test)
 
     # model prediction and evaluation
     
     prediction_pipeline = PredictionPipeline()
     predictions = prediction_pipeline.predict(X_test, y_test)
-
-    print(f"Predictions: {predictions}")
-    print(f"ROC AUC Score: {roc_auc_res}")
-    print(f"Model pipeline: {pipeline}")
-    print("Model training completed successfully.")
-
 
 if __name__ == "__main__":
     main()

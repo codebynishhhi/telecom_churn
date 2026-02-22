@@ -60,3 +60,10 @@ XGB_PARAMS = {
 # ==============================
 
 CHURN_THRESHOLD = 0.35
+
+# ==============================
+# TUNING CONFIG
+# ==============================
+
+ENABLE_TUNING = True
+N_ITER = 15   # number of parameter combinations to try in hyperparameter tuning
