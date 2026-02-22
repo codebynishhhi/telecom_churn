@@ -35,7 +35,7 @@ N_SPLITS = 5
 # MODEL CONFIG
 # ==============================
 
-MODEL_TYPE = "logistic"  # logistic | xgboost | random_forest
+MODEL_TYPE = "xgboost"  # logistic | xgboost | random_forest
 
 # Logistic Regression Parameters
 LOGISTIC_REGRESSION_PARAMS = {
