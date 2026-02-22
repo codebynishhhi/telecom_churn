@@ -72,4 +72,4 @@ N_ITER = 15   # number of parameter combinations to try in hyperparameter tuning
 # Automatic Threshold Tuning
 # ==============================================
 AUTO_THRESHOLD = True
-RECALL_CONSTRAINT = 0.70
+RECALL_CONSTRAINT = 0.75
