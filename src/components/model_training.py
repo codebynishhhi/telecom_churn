@@ -45,6 +45,7 @@ class ModelTraining:
 
     def __init__(self):
         self.pipeline = None
+        self.default_values = {}
 
     # ==========================================================
     # Build Model
@@ -226,4 +227,15 @@ class ModelTraining:
             print(f"\nModel saved at: {MODEL_SAVE_PATH}")
             print("Training Completed Successfully")
 
+            # Save default values for inference
+            for col in X_train.columns:
+                if np.issubdtype(X_train[col].dtype, np.number):
+                    self.default_values[col] = float(X_train[col].median())
+                else:
+                    self.default_values[col] = X_train[col].mode()[0]
+
+            joblib.dump(
+                self.default_values,
+                os.path.join(ARTIFACTS_DIR, "default_training_metrics.pkl"))
+            
             return self.pipeline, test_roc
