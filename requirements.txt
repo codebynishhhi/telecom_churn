@@ -6,3 +6,5 @@ seaborn
 xgboost
 mlflow==2.*
 joblib
+fastapi
+uvicorn
